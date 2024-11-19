@@ -6,8 +6,7 @@ class cal_loss(nn.Module):
         super(cal_loss, self).__init__()
         self.reduction = reduction
 
-    def forward(self, input, target):
-        alpha = 0.6
+    def forward(self, input, target, alpha):
         diff = input - target
         
         loss = torch.pow(diff, 2)  # 计算平方误差
