@@ -22,6 +22,8 @@ def fit_model(data, prior, output_path='./test_result',
     """
     The actually scripts for training.
     """
+
+    ## 可以在这里加alpha的循环 alpha从[0.6,0.7,0.8,0.9]。
     # Global container
     data_spliter = DataSpliter(data=data, data_val_size=data_val_size, data_test_size=0)
     trainer = Trainer(num_epochs=num_epochs, output_path=output_path,

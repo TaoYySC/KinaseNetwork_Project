@@ -9,7 +9,7 @@ from cal_loss import cal_loss
 class Trainer(object):
     def __init__(self, num_epochs, output_path,
                  scheduler_class=torch.optim.lr_scheduler.CosineAnnealingLR,
-                 scheduler_kwargs={'T_max': 10}, device='cpu'):
+                 scheduler_kwargs={'T_max': 10}, device='cpu',alpha = 0.7):
         super().__init__()
         self.num_epochs = num_epochs
         self.output_path = output_path
@@ -19,6 +19,7 @@ class Trainer(object):
         # self.criterion = nn.MSELoss()
         self.criterion = cal_loss()
         self.device = device
+        self.alpha = alpha
 
         os.makedirs(os.path.join(self.output_path, 'run_log'), exist_ok=True)
 

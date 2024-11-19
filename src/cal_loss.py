@@ -7,12 +7,14 @@ class cal_loss(nn.Module):
         self.reduction = reduction
 
     def forward(self, input, target, alpha):
+
+        threshold = 1
+            
         diff = input - target
-        
         loss = torch.pow(diff, 2)  # 计算平方误差
 
-        loss_1 = loss * (target < 1.2).float()    #计算小于1.2部分的loss
-        loss_2 = loss * (target >= 1.2).float()    #计算大于1.2部分的loss
+        loss_1 = loss * (target < threshold).float()    #计算小于threshold部分的loss
+        loss_2 = loss * (target >= threshold).float()    #计算大于threshold部分的loss
 
         loss = (1 - alpha) * loss_1 + alpha * loss_2   #将两部分进行加权融合，其中loss2权重大，loss1权重小
          
