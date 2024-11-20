@@ -2,3 +2,4 @@ data/
 model/
 run_log/
 *.csv
+*.log
