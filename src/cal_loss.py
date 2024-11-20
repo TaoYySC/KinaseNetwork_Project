@@ -8,7 +8,7 @@ class cal_loss(nn.Module):
 
     def forward(self, input, target, alpha):
 
-        threshold = 1
+        threshold = 1.2
             
         diff = input - target
         loss = torch.pow(diff, 2)  # 计算平方误差

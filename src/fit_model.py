@@ -23,13 +23,12 @@ def fit_model(data, prior, output_path='./test_result',
     The actually scripts for training.
     """
 
-    ## 可以在这里加alpha的循环 alpha从[0.6,0.7,0.8,0.9]。
     # Global container
     data_spliter = DataSpliter(data=data, data_val_size=data_val_size, data_test_size=0)
     trainer = Trainer(num_epochs=num_epochs, output_path=output_path,
-                      scheduler_class=scheduler_class,
-                      scheduler_kwargs=scheduler_kwargs,
-                      device=device, alpha = alpha)
+                    scheduler_class=scheduler_class,
+                    scheduler_kwargs=scheduler_kwargs,
+                    device=device, alpha = alpha)
     evaluator = Evaluator(eps=eps, output_path=output_path, device=device)
 
     # Create output dir
@@ -60,13 +59,13 @@ def fit_model(data, prior, output_path='./test_result',
             # 2-1. Model initialization
             set_seeds(cv)
             model = KinaseNet(input_dim=train_data.shape[1], hidden_dim=train_prior.shape[0], 
-                              ksr_mask=train_prior, ppi_mask=None, use_ksr_as_weights=False,
-                              dropout_rate1=dropout_rate1, dropout_rate2=dropout_rate2, 
-                              dropout_rate3=dropout_rate3, activation=activation).to(device)
+                            ksr_mask=train_prior, ppi_mask=None, use_ksr_as_weights=False,
+                            dropout_rate1=dropout_rate1, dropout_rate2=dropout_rate2, 
+                            dropout_rate3=dropout_rate3, activation=activation).to(device)
             
             # 2-2. Optimizer initialization
             opt_setter = OptimizerSetter(optimizer_class=optimizer_class, optimizerkw=optimizerkw, 
-                                         optimizer_paramskw=optimizer_paramskw, lr=lr, weight_decay=wd, relmax=None, it=None)
+                                        optimizer_paramskw=optimizer_paramskw, lr=lr, weight_decay=wd, relmax=None, it=None)
             opt_setter.generate_optimizer(model)
     
             # 3. Fit model
