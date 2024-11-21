@@ -18,10 +18,15 @@ def fit_model(data, prior, output_path='./test_result',
               scheduler_class=torch.optim.lr_scheduler.CosineAnnealingLR, scheduler_kwargs={'T_max': 10}, 
               optimizer_class=torch.optim.Adam, optimizerkw={}, optimizer_paramskw={'prior': {'weight_decay': 1e-10}},
               dropout_rate1=0.5, dropout_rate2=0.01, dropout_rate3=0.01, activation=ReLU0,
-              eps=torch.finfo(torch.float).eps, eps_factor=10, fill_zeroed=True, device='cpu', alpha = 0.7, threshold = 1.2):
+              eps=torch.finfo(torch.float).eps, eps_factor=10, fill_zeroed=True, device='cpu', alpha = 0.75, percentile = 75):
     """
     The actually scripts for training.
     """
+    # Calculate the threshold
+    data_copy = np.array(data)
+    data_1D = np.array(data_copy).flatten()
+    threshold = np.percentile(data_1D, percentile)
+    # print(f"percentile = {percentile},threshold = {threshold}")
 
     # Global container
     data_spliter = DataSpliter(data=data, data_val_size=data_val_size, data_test_size=0)
