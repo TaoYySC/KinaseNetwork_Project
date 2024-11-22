@@ -12,14 +12,14 @@ dp1 = 0.05
 dp2 = 0
 alpha_default = 0.75
 percentile_default = 75
-alpha_array = [0.6,0.7,0.75,0.8,0.9]
-percentile_array = [60,70,75,80,90]
+# alpha_array = [0.6,0.7,0.75,0.8,0.9]
+# percentile_array = [60,70,75,80,90]
+
+alpha_array = [0.5,0.55]
+percentile_array = [50,55]
 
 # 固定住percentile 对alpha进行循环
-
 percentile = percentile_default
-data_1D = np.array(data).flatten()
-threshold = np.percentile(data_1D, percentile)
 print(f"dp1: {dp1}, dp2: {dp2}\n")
 for alpha in alpha_array:
     fit_model(data, prior, output_path=f"./result_{ct}_percentile_{percentile}_alpha_{alpha}/dp1_{dp1}_dp2_{dp2}/", 
@@ -35,11 +35,6 @@ for alpha in alpha_array:
 # 固定住alpha 对percentile进行循环
 alpha = alpha_default
 for percentile in percentile_array:
-    # 避免重复运行 alpha 0.75 和percentile 75
-    if percentile == 75:
-        continue
-    data_1D = np.array(data).flatten()
-    threshold = np.percentile(data_1D, percentile)
     fit_model(data, prior, output_path=f"./result_{ct}_percentile_{percentile}_alpha_{alpha}/dp1_{dp1}_dp2_{dp2}/", 
         data_val_size=0.3, batch_size=32, fraction_gs=0.2, 
         num_epochs=200, cvs=5, num_epochs_refit=50, refit_iters=10, refit_resample=True, 
