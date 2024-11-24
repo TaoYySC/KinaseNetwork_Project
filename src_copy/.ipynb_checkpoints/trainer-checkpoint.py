@@ -3,8 +3,6 @@ import os
 import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
-from cal_loss import cal_loss
-from shrinkage_loss import shrinkage_loss
 
 
 class Trainer(object):
@@ -16,10 +14,7 @@ class Trainer(object):
         self.output_path = output_path
         self.scheduler_class = scheduler_class
         self.scheduler_kwargs = scheduler_kwargs
-        #################################### mseLoss
-        # self.criterion = nn.MSELoss()
-        # self.criterion = cal_loss()
-        self.criterion = shrinkage_loss()
+        self.criterion = nn.MSELoss()
         self.device = device
 
         os.makedirs(os.path.join(self.output_path, 'run_log'), exist_ok=True)

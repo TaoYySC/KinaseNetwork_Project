@@ -4,13 +4,12 @@ import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 from cal_loss import cal_loss
-from shrinkage_loss import shrinkage_loss
 
 
 class Trainer(object):
     def __init__(self, num_epochs, output_path,
                  scheduler_class=torch.optim.lr_scheduler.CosineAnnealingLR,
-                 scheduler_kwargs={'T_max': 10}, device='cpu'):
+                 scheduler_kwargs={'T_max': 10}, device='cpu',alpha = 0.7, threshold = 1.2):
         super().__init__()
         self.num_epochs = num_epochs
         self.output_path = output_path
@@ -18,13 +17,14 @@ class Trainer(object):
         self.scheduler_kwargs = scheduler_kwargs
         #################################### mseLoss
         # self.criterion = nn.MSELoss()
-        # self.criterion = cal_loss()
-        self.criterion = shrinkage_loss()
+        self.criterion = cal_loss()
         self.device = device
+        self.alpha = alpha
+        self.alpha = threshold
 
         os.makedirs(os.path.join(self.output_path, 'run_log'), exist_ok=True)
 
-    def run_epochs(self, optimizer, model, train_loader, val_loader, cv, weight_decay, refit=None):
+    def run_epochs(self, optimizer, model, train_loader, val_loader, cv, weight_decay, refit=None, alpha = 0.7, threshold = 1.2):
         logfile_path = os.path.join(self.output_path, 'run_log', f"cv{cv}_wd{weight_decay}_refit{refit}")
         os.makedirs(logfile_path, exist_ok=True)
         
@@ -36,8 +36,8 @@ class Trainer(object):
         valid_epoch_loss = []
         valid_epoch_r2 = []
         for epoch in range(self.num_epochs):
-            train_loss_avg = self.train_iteration(model, train_loader, optimizer)
-            val_loss_avg, val_r2_avg = self.valid_iteration(model, val_loader)
+            train_loss_avg = self.train_iteration(model, train_loader, optimizer, alpha, threshold)
+            val_loss_avg, val_r2_avg = self.valid_iteration(model, val_loader, alpha, threshold)
 
             scheduler.step()
 
@@ -77,7 +77,7 @@ class Trainer(object):
                 'drop_p_ksr': model.ksr.dropout_rate
                 }
                
-    def train_iteration(self, model, train_loader, optimizer):
+    def train_iteration(self, model, train_loader, optimizer, alpha, threshold):
         model.train()
         
         train_loss = 0
@@ -87,7 +87,7 @@ class Trainer(object):
             optimizer.zero_grad()
             output = model(inputs)
             
-            loss = self.criterion(output, targets)
+            loss = self.criterion(output, targets, alpha, threshold)
             loss.backward()
             optimizer.step()
 
@@ -97,7 +97,7 @@ class Trainer(object):
 
         return train_loss_avg
 
-    def valid_iteration(self, model, val_loader):
+    def valid_iteration(self, model, val_loader, alpha, threshold):
         val_loss, val_r2 = 0, 0
         for inputs, targets in val_loader:
             inputs, targets = inputs.to(self.device), targets.to(self.device)
@@ -106,7 +106,7 @@ class Trainer(object):
             with torch.no_grad():
                 output = model(inputs)
             
-            loss = self.criterion(output, targets)
+            loss = self.criterion(output, targets, alpha, threshold)
 
             var = torch.var(targets)
             r2 = 1 - (loss.item() / var)
