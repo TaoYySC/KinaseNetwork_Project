@@ -22,6 +22,7 @@ class Trainer(object):
         # self.criterion = nn.MSELoss()
         # self.criterion = cal_loss()
         self.criterion = shrinkage_loss()
+        self.mse = nn.MSELoss()
         self.device = device
 
         os.makedirs(os.path.join(self.output_path, 'run_log'), exist_ok=True)
@@ -109,9 +110,10 @@ class Trainer(object):
                 output = model(inputs)
             
             loss = self.criterion(output, targets, a, c)
+            loss_mse = self.mse(output,targets)
 
             var = torch.var(targets)
-            r2 = 1 - (loss.item() / var)
+            r2 = 1 - (loss_mse.item() / var)
             
             val_loss += loss.item()
             val_r2 += r2.item()
