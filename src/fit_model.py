@@ -18,7 +18,7 @@ def fit_model(data, prior, output_path='./test_result',
               scheduler_class=torch.optim.lr_scheduler.CosineAnnealingLR, scheduler_kwargs={'T_max': 10}, 
               optimizer_class=torch.optim.Adam, optimizerkw={}, optimizer_paramskw={'prior': {'weight_decay': 1e-10}},
               dropout_rate1=0.5, dropout_rate2=0.01, dropout_rate3=0.01, activation=ReLU0,
-              eps=torch.finfo(torch.float).eps, eps_factor=10, fill_zeroed=True, device='cpu'):
+              eps=torch.finfo(torch.float).eps, eps_factor=10, fill_zeroed=True, device='cpu', a = 10, c = 0.2):
     """
     The actually scripts for training.
     """
@@ -33,7 +33,7 @@ def fit_model(data, prior, output_path='./test_result',
     trainer = Trainer(num_epochs=num_epochs, output_path=output_path,
                     scheduler_class=scheduler_class,
                     scheduler_kwargs=scheduler_kwargs,
-                    device=device)
+                    device=device, a=a, c=c)
     evaluator = Evaluator(eps=eps, output_path=output_path, device=device)
 
     # Create output dir
@@ -75,7 +75,7 @@ def fit_model(data, prior, output_path='./test_result',
     
             # 3. Fit model
             fit_report = trainer.run_epochs(optimizer=opt_setter.optimizer, model=model, train_loader=train_loader, 
-                                            val_loader=val_loader, cv=cv, weight_decay=wd, refit=None)
+                                            val_loader=val_loader, cv=cv, weight_decay=wd, refit=None, a=a, c=c)
             
             # 4. Evaluate performance
             evaluator.run_evaluation(model=model, data_loader=val_loader, prior=train_prior, gs=test_prior, cv=cv, weight_decay=wd, refit=None, train_report=fit_report)
@@ -92,7 +92,7 @@ def fit_model(data, prior, output_path='./test_result',
                         batch_size=batch_size, num_epochs=num_epochs_refit, refit_iters=refit_iters, 
                         resample=refit_resample, eps=eps, eps_factor=eps_factor, fill_zeroed=fill_zeroed, 
                         optimizer_class=optimizer_class, optimizerkw=optimizerkw, optimizer_paramskw=optimizer_paramskw, 
-                        lr=lr, wd=wd, relmax=0, cv=cv, output_path=output_path, device=device)
+                        lr=lr, wd=wd, relmax=0, cv=cv, output_path=output_path, device=device, a=a, c=c)
     
     # Store final performance
     evaluator.save_performance(save_tmp=False)
@@ -102,7 +102,7 @@ def refit_model(model, data_spliter, trainer, evaluator, train_loader, val_loade
                 eps=torch.finfo(torch.float).eps, eps_factor=10, fill_zeroed=True, 
                 optimizer_class=torch.optim.Adam, optimizerkw={}, 
                 optimizer_paramskw={'prior': {'weight_decay': 1e-10}}, lr=1e-4, wd=0,
-                relmax=0, cv=0, output_path='./test_result', device='cpu'):
+                relmax=0, cv=0, output_path='./test_result', device='cpu', a=10, c=0.2):
     """
     Prune weights of kki and ksr based on CPD and refit model.
     """

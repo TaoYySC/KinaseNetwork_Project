@@ -6,9 +6,9 @@ class shrinkage_loss(nn.Module):
         super(shrinkage_loss, self).__init__()
         self.reduction = reduction
 
-    def forward(self, input, target):
-        a = 10
-        c = 0.2
+    def forward(self, input, target, a, c):
+        # a = 10
+        # c = 0.2
         diff = torch.abs(input - target)
         
         numerator = torch.pow(diff, 2)  # 计算平方误差

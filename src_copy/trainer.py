@@ -20,7 +20,7 @@ class Trainer(object):
         self.criterion = cal_loss()
         self.device = device
         self.alpha = alpha
-        self.alpha = threshold
+        self.threshold = threshold
 
         os.makedirs(os.path.join(self.output_path, 'run_log'), exist_ok=True)
 
