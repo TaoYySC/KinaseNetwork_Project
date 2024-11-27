@@ -18,7 +18,7 @@ c_default = 0.2
 
 a = a_default
 for c in c_list:
-    fit_model(data, prior, output_path=f"./result_{ct}_skloss_a_{a}_c_{c}/dp1_{dp1}_dp2_{dp2}/", 
+    fit_model(data, prior, output_path=f"./result_{ct}_new_skloss_a_{a}_c_{c}/dp1_{dp1}_dp2_{dp2}/", 
           data_val_size=0.3, batch_size=32, fraction_gs=0.2, 
           num_epochs=1000, cvs=5, num_epochs_refit=250, refit_iters=10, refit_resample=True, 
           weight_decays=[1e-10], lr=1e-4, 
@@ -31,7 +31,7 @@ c = c_default
 for a in a_list:
     if a == 10:
         continue 
-    fit_model(data, prior, output_path=f"./result_{ct}_skloss_a_{a}_c_{c}/dp1_{dp1}_dp2_{dp2}/", 
+    fit_model(data, prior, output_path=f"./result_{ct}_new_skloss_a_{a}_c_{c}/dp1_{dp1}_dp2_{dp2}/", 
           data_val_size=0.3, batch_size=32, fraction_gs=0.2, 
           num_epochs=1000, cvs=5, num_epochs_refit=250, refit_iters=10, refit_resample=True, 
           weight_decays=[1e-10], lr=1e-4, 
